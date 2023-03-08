@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -7,9 +8,25 @@
     <title>Etch-A-Sketch</title>
     <link rel="stylesheet" href="./style.css">
 </head>
+
 <body>
-    <h1>Etch a Sketch</h1>
-    <div class="grid-container"></div>
-<script src="./scripts.js"></script>
+    <h1 class="title">Etch a Sketch</h1>
+        <div class="grid-container">
+            <button class="reset-button" id="reset">Reset</button>
+        </div>
+        
+    <div class="buttons-container">
+        <input class="color-input" type="color">
+        <button>Rainbow Mode</button>
+        <button>Color Picker</button>
+        <button>Shading</button>
+    </div>
+    <div class="size-container">
+        <input class="slider" type="range" min="1" max="100">
+        <div class="size-indicator">Slide to Adjust Size</div>
+    </div>
+    <p class="author">Made by TCHN</p>
+    <script src="./scripts.js"></script>
 </body>
+
 </html>

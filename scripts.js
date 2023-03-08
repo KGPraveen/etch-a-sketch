@@ -1,5 +1,17 @@
 var grids = 16;
 var gridContainer = document.querySelector(".grid-container");
+var mouseDown = 0;
+var colorInput = document.querySelector(".color-input");
+
+window.addEventListener("mousedown", ()=>{
+    mouseDown = 1;
+    console.log(mouseDown);
+});
+
+window.addEventListener("mouseup", ()=>{
+    mouseDown = 0;
+    console.log(mouseDown);
+});
 
 function addGrids(grids) {
     for (var i = 0; i < grids*grids; i++) {
@@ -11,4 +23,17 @@ function addGrids(grids) {
     gridContainer.style.gridTemplateRows = `repeat(${grids} , 1fr)`;
 }
 
-addGrids(16);
+addGrids(32);
+
+var slider = document.querySelector(".slider");
+var sizeIndicator = document.querySelector(".size-indicator");
+
+slider.oninput = sizeChanged;
+
+function sizeChanged () {
+    while (gridContainer.lastChild.id !== 'reset') {
+        gridContainer.removeChild(gridContainer.lastChild);
+    }
+    sizeIndicator.innerHTML = `${slider.value} x ${slider.value}`;
+    addGrids(slider.value);
+}
