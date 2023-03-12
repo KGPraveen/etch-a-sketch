@@ -1,10 +1,15 @@
 var gridContainer = document.querySelector(".grid-container");
 var mouseDown = false;
-var colorInput = document.querySelector(".color-input");
+var colorInputIndicator = document.querySelector(".color-input");
 var backgroundColor = document.querySelector(".bgcolor-input").value;
 var rainbowButton = document.querySelector(".rainbow-button");
 var pickerButton = document.querySelector(".picker-button");
 var shaderButton = document.querySelector(".shading-button");
+var eraserButton = document.querySelector(".eraser-button");
+var red;
+var blue;
+var green;
+var isEraser = false;
 var isRainbow = false;
 var isPicker = false;
 var isShader = false;
@@ -46,7 +51,7 @@ slider.oninput = sizeChanged;
 
 function sizeChanged() {
     backgroundColor = document.querySelector(".bgcolor-input").value;
-    while (gridContainer.lastChild.id !== 'reset') {
+    while (gridContainer.lastChild.id !== 'reset' && gridContainer.lastChild.id !== 'eraser') {
         gridContainer.removeChild(gridContainer.lastChild);
     }
     sizeIndicator.innerHTML = `${slider.value} x ${slider.value}`;
@@ -64,9 +69,44 @@ function sliderClick(e) {
     });
 }
 
+
+// THIS IS WHERE THE COLOR TO DRAW IS CHOSEN!! ================================================================================ THIS IS WHERE THE COLOR TO DRAW IS CHOSEN!!
+
+
 function mouseOnGrid(e) {
     if (e.type === 'mouseover' && !mouseDown) return;
-    e.target.style.backgroundColor = colorInput.value;
+
+    if (isEraser) {
+        e.target.style.backgroundColor = backgroundColor;
+    } else if (isPicker) {
+        var gridColor = e.target.style.backgroundColor;
+
+        var colorsOnly = gridColor.substring(gridColor.indexOf('(') + 1, gridColor.lastIndexOf(')')).split(/,\s*/);
+        
+        //----------------------------------- parseInt to avoid string assignments
+        red = parseInt(colorsOnly[0]);
+        green = parseInt(colorsOnly[1]);
+        blue = parseInt(colorsOnly[2]);
+        //---------------------------------------------------------------------------
+
+        //----------------------------------- needs to be a string, i.e. "#ffffff" and not #ffffff.
+        colorInputIndicator.value = rgbToHex(red, green, blue).toString();
+        //-------------------------------------------------------------------------------------------
+
+        picker();  //Turns off picker once it's used.
+
+        //OKAY, SO HERE IS WHAT HAPPENED:
+        // In var colorsOnly = gridColor.substring(gridColor.indexOf('(') + 1, gridColor.lastIndexOf(')')).split(/,\s*/);
+        //gridColor.substring(gridColor.indexOf('(') + 1, >>>> Gets values after "rgb("
+        //gridColor.lastIndexOf(')')).split(/,\s*/); >>>>> Gets values before the last ')'.
+        //The regex "/,\s*/" splits by ',' and eliminates any whitespaces, so that when the string "rgb(130, 23, 217)"
+        //becomes a substring, it becomes "130,23,217", instead of "130, 23, 217".
+        //Then last but not the least, the ending substring is split into array elements divided by ','
+        //hence, red=130; blue=23; and green=217; as they are array elements [0] [1] and [2] respectively.
+    }
+    else {
+        e.target.style.backgroundColor = colorInputIndicator.value;
+    }
 }
 
 var clickAudio = document.querySelector('.click-sound');
@@ -80,19 +120,37 @@ function playAudio() {
 
 function reset() {
     backgroundColor = document.querySelector(".bgcolor-input").value;
-    if(!grids) return;
+    if (!grids) return;
     grids = Array.from(document.querySelectorAll(".grid"));
     grids.forEach(grid => {
         grid.style.backgroundColor = backgroundColor;
     });
 }
 
+function eraser(e) {
+
+    if (isRainbow) rainbow();
+    if (isPicker) picker();
+    if (isShader) shader();
+
+    if (isEraser) {
+        isEraser = false;
+        eraserButton.classList.remove("toggle");
+        console.log("Eraser: " + isEraser);
+        return;
+    }
+    isEraser = true;
+    eraserButton.classList.add("toggle");
+    console.log("Eraser: " + isEraser);
+}
+
 function rainbow(e) {
 
-    if(isPicker) picker();
-    if(isShader) shader();
+    if (isEraser) eraser();
+    if (isPicker) picker();
+    if (isShader) shader();
 
-    if(isRainbow) {
+    if (isRainbow) {
         isRainbow = false;
         rainbowButton.classList.remove("toggle");
         console.log("Rainbow: " + isRainbow);
@@ -105,10 +163,11 @@ function rainbow(e) {
 
 function picker(e) {
 
-    if(isShader) shader();
-    if(isRainbow) rainbow();
+    if (isEraser) eraser();
+    if (isShader) shader();
+    if (isRainbow) rainbow();
 
-    if(isPicker) {
+    if (isPicker) {
         isPicker = false;
         pickerButton.classList.remove("toggle");
         console.log("Picker: " + isPicker);
@@ -121,10 +180,11 @@ function picker(e) {
 
 function shader(e) {
 
-    if(isPicker) picker();
-    if(isRainbow) rainbow();
+    if (isEraser) eraser();
+    if (isPicker) picker();
+    if (isRainbow) rainbow();
 
-    if(isShader) {
+    if (isShader) {
         isShader = false;
         shaderButton.classList.remove("toggle");
         console.log("Shader: " + isShader);
@@ -134,3 +194,15 @@ function shader(e) {
     shaderButton.classList.add("toggle");
     console.log("Shader: " + isShader);
 }
+
+
+// OTHER FUNCTIONS ----------------------------------------------------------------
+
+function componentToHex(c) {
+    let hex = c.toString(16);
+    return hex.length == 1 ? "0" + hex : hex;
+}
+function rgbToHex(r, g, b) {
+    return "#" + componentToHex(r) + componentToHex(g) + componentToHex(b);
+}
+console.log(rgbToHex(255, 255, 255)); // #1c89c9
