@@ -103,6 +103,27 @@ function mouseOnGrid(e) {
         //becomes a substring, it becomes "130,23,217", instead of "130, 23, 217".
         //Then last but not the least, the ending substring is split into array elements divided by ','
         //hence, red=130; blue=23; and green=217; as they are array elements [0] [1] and [2] respectively.
+    } else if(isRainbow) {
+        red = Math.floor(Math.random() * 256);
+        green = Math.floor(Math.random() * 256);
+        blue = Math.floor(Math.random() * 256);
+        e.target.style.backgroundColor = rgbToHex(red, green, blue);
+
+    } else if(isShader) {
+
+        var gridColor = e.target.style.backgroundColor;
+        var colorsOnly = gridColor.substring(gridColor.indexOf('(') + 1, gridColor.lastIndexOf(')')).split(/,\s*/);
+        
+        //----------------------------------- parseInt to avoid string assignments
+        red = parseInt(colorsOnly[0]);
+        red = red - (red * (10/100) );
+        green = parseInt(colorsOnly[1]);
+        green = green - (green * (10/100) );
+        blue = parseInt(colorsOnly[2]);
+        blue = blue - (blue * (10/100) );
+
+        console.log(`rgb(${red}, ${green}, ${blue})`);
+        e.target.style.backgroundColor = `rgb(${red}, ${green}, ${blue})`;
     }
     else {
         e.target.style.backgroundColor = colorInputIndicator.value;
@@ -205,4 +226,16 @@ function componentToHex(c) {
 function rgbToHex(r, g, b) {
     return "#" + componentToHex(r) + componentToHex(g) + componentToHex(b);
 }
-console.log(rgbToHex(255, 255, 255)); // #1c89c9
+
+
+function hexToRGB(hex, alpha) {
+    var r = parseInt(hex.slice(1, 3), 16),
+        g = parseInt(hex.slice(3, 5), 16),
+        b = parseInt(hex.slice(5, 7), 16);
+
+    if (alpha) {
+        return "rgba(" + r + ", " + g + ", " + b + ", " + alpha + ")";
+    } else {
+        return "rgb(" + r + ", " + g + ", " + b + ")";
+    }
+}
