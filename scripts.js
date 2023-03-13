@@ -6,6 +6,7 @@ var rainbowButton = document.querySelector(".rainbow-button");
 var pickerButton = document.querySelector(".picker-button");
 var shaderButton = document.querySelector(".shading-button");
 var eraserButton = document.querySelector(".eraser-button");
+var resetButton = document.querySelector(".reset-button");
 var red;
 var blue;
 var green;
@@ -131,15 +132,15 @@ function mouseOnGrid(e) {
 }
 
 var clickAudio = document.querySelector('.click-sound');
-var buttons = Array.from(document.querySelectorAll("button"));
 
-buttons.forEach(button => button.addEventListener('mousedown', playAudio));
-function playAudio() {
     clickAudio.currentTime = 0;
     clickAudio.play();
-}
+
 
 function reset() {
+    clickAudio.currentTime = 0;
+    clickAudio.play();
+
     backgroundColor = document.querySelector(".bgcolor-input").value;
     if (!grids) return;
     grids = Array.from(document.querySelectorAll(".grid"));
@@ -149,6 +150,9 @@ function reset() {
 }
 
 function eraser(e) {
+
+    clickAudio.currentTime = 0;
+    clickAudio.play();
 
     if (isRainbow) rainbow();
     if (isPicker) picker();
@@ -167,6 +171,9 @@ function eraser(e) {
 
 function rainbow(e) {
 
+    clickAudio.currentTime = 0;
+    clickAudio.play();
+
     if (isEraser) eraser();
     if (isPicker) picker();
     if (isShader) shader();
@@ -183,6 +190,9 @@ function rainbow(e) {
 }
 
 function picker(e) {
+
+    clickAudio.currentTime = 0;
+    clickAudio.play();
 
     if (isEraser) eraser();
     if (isShader) shader();
@@ -201,6 +211,9 @@ function picker(e) {
 
 function shader(e) {
 
+    clickAudio.currentTime = 0;
+    clickAudio.play();
+
     if (isEraser) eraser();
     if (isPicker) picker();
     if (isRainbow) rainbow();
@@ -212,8 +225,28 @@ function shader(e) {
         return;
     }
     isShader = true;
-    shaderButton.classList.add("toggle");
+    shaderButton.classList.add("toggle");s
     console.log("Shader: " + isShader);
+}
+
+window.addEventListener("keydown", shortcut);
+
+function shortcut(e) {
+    if(e.keyCode === 69) {
+        eraser();
+    } else if(e.keyCode === 82) {
+        resetButton.classList.add("toggle");
+        //========================================================================================================
+        setTimeout(() => {
+            resetButton.classList.remove("toggle");
+          }, 100);
+        // THIS IS MY LAZY WAY OF ENABLING TOGGLE CLASSLIST FOR RESET BUTTON WITHOUT DOING IT THE "NORMAL" WAY====
+        reset();
+    } else if(e.keyCode === 81) {
+        picker();
+    } else if(e.keyCode === 84) {
+        shader();
+    } else return;
 }
 
 
