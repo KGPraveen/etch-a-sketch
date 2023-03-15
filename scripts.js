@@ -123,7 +123,7 @@ function mouseOnGrid(e) {
         blue = parseInt(colorsOnly[2]);
         blue = blue - (blue * (10/100) );
 
-        console.log(`rgb(${red}, ${green}, ${blue})`);
+        // console.log(`rgb(${red}, ${green}, ${blue})`);
         e.target.style.backgroundColor = `rgb(${red}, ${green}, ${blue})`;
     }
     else {
@@ -132,9 +132,6 @@ function mouseOnGrid(e) {
 }
 
 var clickAudio = document.querySelector('.click-sound');
-
-    clickAudio.currentTime = 0;
-    clickAudio.play();
 
 
 function reset() {
@@ -225,7 +222,7 @@ function shader(e) {
         return;
     }
     isShader = true;
-    shaderButton.classList.add("toggle");s
+    shaderButton.classList.add("toggle");
     console.log("Shader: " + isShader);
 }
 
